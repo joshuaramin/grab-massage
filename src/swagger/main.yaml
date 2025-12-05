@@ -1,0 +1,111 @@
+---
+openapi: 3.0.1
+info:
+  title: Grab App Documentation
+  version: 1.0.0
+  description: This documentation serves as a clear and comprehensive guide to the Express App template, outlining its API endpoints, request and response structures, authentication methods, and best practices. Designed for developers, it provides the essential information needed to efficiently integrate, customize, and extend the application while maintaining performance, security, and scalability.
+  contact:
+    email: raminjoshua05@gmail.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:4000
+tags:
+  - name: Users
+    description: API Documentation for Users
+paths:
+  /users:
+    get:
+      summary: Get All Users
+      description: Getting all user list
+      tags:
+        - Users
+      responses:
+        "200":
+          description: List of all Users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        "403":
+          description: Unauthoried User account, you need to log in as admin
+    post:
+      summary: Create an User acount
+      description: Create a singl User account
+      tags:
+        - Users
+  /users/{user_id}":
+    get:
+      tags:
+        - Users
+      summary: Find User By ID
+      description: Return a single User
+      operation: getUserById
+      parameter:
+        - name: user_id
+          description: ID of User to Return
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Successfull operation
+          content:
+            application/json:
+              schema: "#/components/schemas/Users"
+        "400":
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema: "#/components/schemas/Users"
+    put:
+      tags:
+        - Users
+      parameter:
+        - name: user_id
+          description: ID of User to Return
+          required: true
+          schema:
+            type: string
+    patch:
+      tags:
+        - Users
+      parameter:
+        - name: user_id
+          description: ID of User to Return
+          required: true
+          schema:
+            type: string
+    delete:
+      tags:
+        - Users
+      parameter:
+        - name: user_id
+          description: ID of User to Return
+          required: true
+          schema:
+            type: string
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        user_id:
+          type: string
+          example: ABDCASD1233
+        username:
+          type: string
+          example: JohnDoe
+        is_deleted:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-08-10T14:30:00
+        updated_at:
+          type: string
+          format: date-time
+          example: 2025-08-10T14:30:00
+  

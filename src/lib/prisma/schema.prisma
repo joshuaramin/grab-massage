@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  user_id    String    @id @default(uuid())
+  email      String    @unique @db.VarChar(100)
+  password   String    @db.VarChar(100)
+  is_deleted Boolean   @default(false)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamp()
+  Logs       Logs[]
+  Booking    Booking[]
+}
+
+model Profile {
+  profile_id String    @id @default(uuid())
+  first_name String    @db.VarChar(50)
+  last_name  String    @db.VarChar(50)
+  phone      String    @db.VarChar(15)
+  gender     String    @db.VarChar(10)
+  is_deleted Boolean   @default(false)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamp()
+  Media      Media?
+  Address    Address[]
+}
+
+model Role {
+  role_id     String   @id @default(uuid())
+  name        String   @unique @db.VarChar(50)
+  description String?  @db.VarChar(255)
+  is_deleted  Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+}
+
+model Address {
+  address_id    String   @id @default(cuid())
+  address_line1 String   @db.VarChar(255)
+  address_line2 String?  @db.VarChar(255)
+  province      String   @db.VarChar(100)
+  city          String   @db.VarChar(100)
+  zip_code      String   @db.VarChar(20)
+  is_deleted    Boolean  @default(false)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now()) @updatedAt @db.Timestamp()
+  profile       Profile? @relation(fields: [profile_id], references: [profile_id])
+  profile_id    String?
+}
+
+model Branch {
+  branch_id  String    @id @default(uuid())
+  name       String    @unique @db.VarChar(100)
+  location   String    @db.VarChar(255)
+  is_deleted Boolean   @default(false)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamp()
+  Booking    Booking[]
+  media      Media?    @relation(fields: [media_id], references: [media_id])
+  media_id   String?
+}
+
+model Media {
+  media_id   String    @id @default(uuid())
+  url        String    @db.VarChar(255)
+  type       String    @db.VarChar(50)
+  is_deleted Boolean   @default(false)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamp()
+  Product    Product[]
+  Service    Service[]
+  Branch     Branch[]
+  profile    Profile?  @relation(fields: [profile_id], references: [profile_id])
+  profile_id String?   @unique
+}
+
+model Product {
+  product_id  String   @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  stock       Int      @default(0)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt @db.Timestamp()
+  media       Media?   @relation(fields: [media_id], references: [media_id])
+  media_id    String?
+}
+
+model Service {
+  service_id    String          @id @default(uuid())
+  name          String          @unique @db.VarChar(100)
+  description   String          @db.VarChar(255)
+  is_deleted    Boolean         @default(false)
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @default(now()) @updatedAt @db.Timestamp()
+  DurationPrice DurationPrice[]
+  Booking       Booking[]
+  media         Media?          @relation(fields: [media_id], references: [media_id])
+  media_id      String?
+}
+
+model DurationPrice {
+  duration_price_id String   @id @default(uuid())
+  duration          Int
+  price             Float
+  is_deleted        Boolean  @default(false)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @default(now()) @updatedAt @db.Timestamp()
+  service           Service? @relation(fields: [service_id], references: [service_id])
+  service_id        String?
+}
+
+model Booking {
+  booking_id String   @id @default(uuid())
+  status     String   @db.VarChar(50) //pending, assigned, completed, cancelled 
+  type       String   @db.VarChar(50) //in-house, home-service
+  amount     Float
+  is_deleted Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamp()
+  branch     Branch?  @relation(fields: [branch_id], references: [branch_id])
+  branch_id  String?
+  service    Service? @relation(fields: [service_id], references: [service_id])
+  service_id String?
+  user       User?    @relation(fields: [user_id], references: [user_id])
+  user_id    String?
+}
+
+model Logs {
+  logs_id    String   @id @default(uuid())
+  action     String   @db.VarChar(255)
+  created_at DateTime @default(now())
+  user       User?    @relation(fields: [user_id], references: [user_id])
+  user_id    String?
+}
