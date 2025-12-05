@@ -3,6 +3,8 @@ import express from "express";
 import swaggerUI from "swagger-ui-express";
 import { withAuth } from "./lib/helpers/withAuth";
 
+dotenv.config();
+
 //Router Imports
 import UserRouter from "./routes/user.route";
 import ServiceRouter from "./routes/service.route";
@@ -16,6 +18,7 @@ import BranchRoute from "./routes/branch.route";
 import BookingRoute from "./routes/booking.route";
 // import AuthRouter from "./routes/auth.route";
 import AddressRouter from "./routes/address.route";
+import { dot } from "node:test/reporters";
 
 const YAML = require("js-yaml");
 

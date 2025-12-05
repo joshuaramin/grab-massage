@@ -13,6 +13,6 @@ export function jsonResponse({ message, status, data, version }: Props) {
       version: version ?? "unknown",
       timeStamp: new Date().toISOString(),
     },
-    { status },
+    { status }
   );
 }

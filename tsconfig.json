@@ -23,5 +23,5 @@
     "baseUrl": ".",                    
     "ignoreDeprecations": "6.0"      
   },
-  "include": ["src"]
+  "include": ["src", "prisma.config.ts"]
 }
